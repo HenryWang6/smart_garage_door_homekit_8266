@@ -2,6 +2,16 @@
 
 All notable changes to `homekit-ratgdo` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
+## v1.0.0 (2026-05-03)
+
+### What's Changed
+
+* Custom Fork Initial Release: Henry's Optimized HomeKit Firmware
+* Feature: Increased CPU frequency to 160MHz for improved HomeKit pairing reliability and crypto performance.
+* Feature: Enhanced Captive Portal with explicit iOS success instructions.
+* Feature: Added mDNS hostname display on the success page for easier discovery.
+* Other: Establish comprehensive local development environment.
+
 ## v2.1.4 (2026-02-??)
 
 ### What's Changed

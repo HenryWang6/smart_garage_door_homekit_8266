@@ -397,21 +397,41 @@ void handle_setssid()
     }
 
     char *txtBuffer = static_cast<char *>(malloc(TXT_BUFFER_SIZE));
+    
+    // HTML Template for the success page
+    const char *htmlTemplate = PSTR(
+        "<html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+        "<title>Saved</title>"
+        "<style>body{font-family:sans-serif;text-align:center;padding:20px;color:#333;}"
+        "h1{color:#4CAF50;}.btn{display:inline-block;margin-top:15px;padding:12px 24px;"
+        "background-color:#007BFF;color:white;text-decoration:none;border-radius:5px;font-weight:bold;}"
+        ".count{color:#e6a23c;font-weight:bold;font-size:1.2em;}</style>"
+        "<script>let c=15;setInterval(()=>{if(c>0)document.getElementById('t').innerText=--c;},1000);</script>"
+        "</head><body>"
+        "<h1>&#10004; Wi-Fi Saved!</h1>"
+        "<p>Connecting to: <b>%s</b></p>"
+        "<p>This window will close shortly: <span id=\"t\" class=\"count\">15</span>s</p>"
+        "<hr style=\"border:0;border-top:1px solid #eee;margin:20px 0;\">"
+        "<p><b>Long press</b> the link below to enter the configuration page:</p>"
+        "<a class=\"btn\" href=\"http://%s.local\">http://%s.local</a>"
+        "</body></html>"
+    );
+
     if (advanced)
     {
         ESP_LOGI(TAG, "Requested WiFi SSID: %s (%d) at AP: %02x:%02x:%02x:%02x:%02x:%02x",
                  ssid.c_str(), net, wifiNet.bssid[0], wifiNet.bssid[1], wifiNet.bssid[2], wifiNet.bssid[3], wifiNet.bssid[4], wifiNet.bssid[5]);
-        snprintf_P(txtBuffer, TXT_BUFFER_SIZE, PSTR("Setting SSID to: %s locked to Access Point: %02x:%02x:%02x:%02x:%02x:%02x\nRATGDO rebooting.\nPlease wait 30 seconds and connect to RATGDO on new network."),
-                   ssid.c_str(), wifiNet.bssid[0], wifiNet.bssid[1], wifiNet.bssid[2], wifiNet.bssid[3], wifiNet.bssid[4], wifiNet.bssid[5]);
     }
     else
     {
         ESP_LOGI(TAG, "Requested WiFi SSID: %s (%d)", ssid.c_str(), net);
-        snprintf_P(txtBuffer, TXT_BUFFER_SIZE, PSTR("Setting SSID to: %s\nRATGDO rebooting.\nPlease wait 30 seconds and connect to RATGDO on new network."), ssid.c_str());
     }
+    
+    snprintf_P(txtBuffer, TXT_BUFFER_SIZE, htmlTemplate, ssid.c_str(), device_name_rfc952, device_name_rfc952);
+
     server.client().setNoDelay(true);
-    server.send_P(200, type_txt, txtBuffer);
-    delay(500);
+    server.send_P(200, type_html, txtBuffer);
+    delay(2500); // Give browser time to load and render HTML before the AP shuts down
     free(txtBuffer);
 
     set_new_ssid(ssid.c_str(), server.arg("pw").c_str(), (advanced) ? wifiNet.bssid : NULL);
