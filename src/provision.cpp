@@ -264,13 +264,13 @@ bool onCommandCallback(improv::ImprovCommand cmd)
 #ifdef ESP8266
         std::vector<std::string> infos = {
             // Firmware name
-            "HomeKit-ratgdo",
+            "HTGDO",
             // Firmware version
             AUTO_VERSION,
             // Hardware chip/variant
             "ESP8266",
             // Device name
-            "Ratgdo"};
+            "HTGDO"};
 #else
         std::vector<std::string> infos = {
             // Firmware name
