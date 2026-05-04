@@ -2,6 +2,22 @@
 
 All notable changes to `homekit-ratgdo` will be documented in this file. This project tries to adhere to [Semantic Versioning](http://semver.org/).
 
+## v1.1.0 (2026-05-04)
+
+### What's Changed
+
+* **Major Rebranding: Project Identity Transition to HTGDO**
+* Visual Identity: Replaced legacy "RATGDO" ASCII art and branding with custom **HTGDO** block logo and "HenryTinkers HomeKit Edition" subtitle.
+* Web UI Rebranding: Updated all user-facing strings across `index.html` and `logs.html`, including button labels and status text.
+* Three-Way Link Architecture: Implemented a secure link decoupling strategy in `functions.js` and `logs.js`.
+    - **Documentation Link**: Dynamically follows `GITUSER`/`GITREPO` build flags.
+    - **Original Contributors Link**: Permanently hardcoded to original repository for strict GPL-3.0 attribution compliance.
+    - **Maintainer Attribution**: Added a new dynamic link to the HenryTinkers profile, coupled to the `GITUSER` build flag.
+* Firmware Internals: Renamed all module log TAGs (12 modules) from `ratgdo-xxx` to `htgdo-xxx` for consistent log viewer experience.
+* Serial CLI: Rebranded the serial banner and command menu strings while preserving original license headers.
+* Security: Rebranded the HTTP Digest authentication realm to "HTGDO Login Required".
+* Build System: Integrated `-D GITUSER` and `-D GITREPO` compiler flags into `platformio.ini` for flexible white-labeling and fork maintenance.
+
 ## v1.0.0 (2026-05-03)
 
 ### What's Changed
