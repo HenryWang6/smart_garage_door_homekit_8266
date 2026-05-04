@@ -359,6 +359,9 @@ function setElementsFromStatus(status) {
     }
     for (const [key, value] of Object.entries(status)) {
         switch (key) {
+            case "gitUser":
+                gitUser = value;
+                break;
             case "gitRepo":
                 gitRepo = value;
                 // Update HTGDO docs link to point to the fork's repo
@@ -863,6 +866,18 @@ function dotDotDot(elem) {
     }, 500);
 }
 
+function compareSemver(a, b) {
+    const v1 = a.replace(/^[vV]/, "").split(".").map(Number);
+    const v2 = b.replace(/^[vV]/, "").split(".").map(Number);
+    const len = Math.max(v1.length, v2.length);
+    for (let i = 0; i < len; i++) {
+        const n1 = v1[i] || 0;
+        const n2 = v2[i] || 0;
+        if (n1 !== n2) return n1 - n2;
+    }
+    return 0;
+}
+
 async function checkVersion(progress = "dotdot1") {
     const versionElem = document.getElementById("newversion");
     const versionElem2 = document.getElementById("newversion2");
@@ -871,63 +886,70 @@ async function checkVersion(progress = "dotdot1") {
     versionElem2.innerHTML = msg;
     const spanDots = document.getElementById(progress);
     const aniDots = dotDotDot(spanDots);
-    const response = await fetch("https://api.github.com/repos/" + gitUser + "/" + gitRepo + "/releases", {
-        method: "GET",
-        cache: "no-cache",
-        redirect: "follow"
-    });
-    const releases = await response.json();
-    if (response.status !== 200) {
-        // We have probably hit the GitHub API rate limits (60 per hour for non-authenticated)
-        versionElem.innerHTML = "";
-        versionElem2.innerHTML = "";
-        console.warn("Error retrieving status from GitHub" + releases.message);
-        return;
-    }
-
-    // make sure we have newest release first
-    let prerelease = document.getElementById("prerelease").checked;
-    const latest = releases
-        .sort((a, b) => {
-            return Date.parse(b.created_at) - Date.parse(a.created_at);
-        })
-        .find((obj) => {
-            // if prerelease allowed, select first object.  Else select first object that not a prerelease.
-            return (prerelease || !obj.prerelease);
+    var latest;
+    try {
+        const response = await fetch("https://api.github.com/repos/" + gitUser + "/" + gitRepo + "/releases", {
+            method: "GET",
+            cache: "no-cache",
+            redirect: "follow"
         });
-    serverStatus.latestVersion = latest;
-    if (latest) {
-        console.log("Newest version: " + latest.tag_name);
-        const asset = latest.assets.find((obj) => {
-            if (gitRepo == "homekit-ratgdo32") {
-                return (obj.content_type === "application/octet-stream") && (obj.name.startsWith(gitRepo) && (obj.name.includes("firmware")));
-            } else {
-                return (obj.content_type === "application/octet-stream") && (obj.name.endsWith(".bin"));
-            }
-        });
-        if (latest?.body) {
-            document.getElementById("firmwareDescription").innerHTML = marked.parse(latest.body);
+        const releases = await response.json();
+        if (response.status !== 200) {
+            // We have probably hit the GitHub API rate limits (60 per hour for non-authenticated)
+            versionElem.innerHTML = "";
+            versionElem2.innerHTML = "";
+            console.warn("Error retrieving status from GitHub" + releases.message);
+            return;
         }
-        if (asset?.name) {
-            serverStatus.downloadURL = asset.browser_download_url;
-            msg = "You have newest release";
-            if (serverStatus.firmwareVersion < latest.tag_name) {
-                // Newest version at GitHub is greater from that installed
-                msg = "Update available  (" + latest.tag_name + ")";
+
+        // make sure we have newest release first
+        let prerelease = document.getElementById("prerelease").checked;
+        latest = releases
+            .sort((a, b) => {
+                return Date.parse(b.created_at) - Date.parse(a.created_at);
+            })
+            .find((obj) => {
+                // if prerelease allowed, select first object.  Else select first object that not a prerelease.
+                return (prerelease || !obj.prerelease);
+            });
+        serverStatus.latestVersion = latest;
+        if (latest) {
+            console.log("Newest version: " + latest.tag_name);
+            const asset = latest.assets.find((obj) => {
+                if (gitRepo == "homekit-ratgdo32") {
+                    return (obj.content_type === "application/octet-stream") && (obj.name.startsWith(gitRepo) && (obj.name.includes("firmware")));
+                } else {
+                    return (obj.content_type === "application/octet-stream") && (obj.name.endsWith(".bin"));
+                }
+            });
+            if (latest?.body) {
+                document.getElementById("firmwareDescription").innerHTML = marked.parse(latest.body);
             }
-        } else {
-            console.warn("No firmware matching CPU architecture found");
+            if (asset?.name) {
+                serverStatus.downloadURL = asset.browser_download_url;
+                msg = "You have newest release";
+                if (compareSemver(serverStatus.firmwareVersion, latest.tag_name) < 0) {
+                    // Newest version at GitHub is greater from that installed
+                    msg = "Update available  (" + latest.tag_name + ")";
+                }
+            } else {
+                console.warn("No firmware matching CPU architecture found");
+                serverStatus.downloadURL = undefined;
+                msg = "No firmware found";
+            }
+        }
+        else {
+            console.log("No firmware found");
             serverStatus.downloadURL = undefined;
             msg = "No firmware found";
         }
+    } catch (error) {
+        console.error("Error checking for firmware update:", error);
+        msg = "Update check failed";
+    } finally {
+        clearInterval(aniDots);
+        spanDots.innerHTML = "";
     }
-    else {
-        console.log("No firmware found");
-        serverStatus.downloadURL = undefined;
-        msg = "No firmware found";
-    }
-    clearInterval(aniDots);
-    spanDots.innerHTML = "";
     versionElem.innerHTML = msg;
     versionElem2.innerHTML = (latest?.tag_name) ? latest.tag_name : msg;
 }

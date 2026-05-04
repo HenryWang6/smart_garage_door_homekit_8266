@@ -792,6 +792,7 @@ void build_status_json(char *json)
     _millis_t upTime = _millis();
     JSON_START(json);
     JSON_ADD_STR("gitRepo", gitRepo);
+    JSON_ADD_STR("gitUser", gitUser);
     JSON_ADD_INT("upTime", upTime);
     JSON_ADD_STR(cfg_deviceName, userConfig->getDeviceName());
     JSON_ADD_STR("userName", userConfig->getwwwUsername());
