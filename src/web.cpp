@@ -620,7 +620,7 @@ void handle_reset()
     AUTHENTICATE();
     ESP_LOGI(TAG, "... reset requested");
 #ifdef ESP8266
-    homekit_storage_reset();
+    homekit_storage_reset_pairing_data();
 #else
     homekit_unpair();
 #endif
