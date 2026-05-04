@@ -1,8 +1,18 @@
 The release process
 ===
 
-Once a release is ready, all you have to do is create a GitHub Release and tag. Once that release is created it will kick off the `.github/workflows/manifest.yml` GitHub Action. This workflow will do all the work for you to get a new release out. It will create an updated manifest.json file with the new version from the tag that you ceated with the release. Once that workflow completes it then triggers another workflow, `.github/workflows/build.yml`, this workflow will create the firmware.bin file following the format of `homekit-ratgdo-${{ latest-tag }}.bin`.
+Once a release is ready, all you have to do is create a GitHub Release and tag from the GitHub Web UI. 
 
-When the firmware and manifest.json is updated, this will automatically update the flasher page as the /docs folder is what the flasher page looks at so no need to update anything in this folder.
+1. Go to your GitHub repository's **Releases** page and click **Draft a new release**.
+2. Create a new tag (e.g., `v1.0.1`) matching the version you want to release.
+3. Click **Generate release notes** to automatically generate the changelog.
+4. Click **Publish release**.
 
-Releases tag should be named v[0-9]+.[0-9]+.[0-9], example: `v0.7.0`. the workflows are designed to follows this pattern, if this pattern isn't followed then the workflow will stop.
+Once the release is published, it will kick off the `.github/workflows/release.yml` GitHub Action. This workflow will do all the work for you to get a new release out:
+- It compiles the project for your ESP8266 board.
+- It attaches the compiled binaries (`HTGDO-${{ latest-tag }}.bin`) to your GitHub Release.
+- It automatically updates `docs/manifest.json` with the absolute GitHub Release download URLs and commits the changes back to the repository.
+
+Because `manifest.json` is updated and committed automatically, the web flasher page will instantly point to the latest firmware release. You do not need to manually commit any `.bin` files to the repository, keeping the repository size small.
+
+Releases tags should follow semantic versioning, e.g., `v1.0.1`.

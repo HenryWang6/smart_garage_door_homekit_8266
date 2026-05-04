@@ -902,14 +902,14 @@ async function checkVersion(progress = "dotdot1") {
             if (gitRepo == "homekit-ratgdo32") {
                 return (obj.content_type === "application/octet-stream") && (obj.name.startsWith(gitRepo) && (obj.name.includes("firmware")));
             } else {
-                return (obj.content_type === "application/octet-stream") && (obj.name.startsWith(gitRepo));
+                return (obj.content_type === "application/octet-stream") && (obj.name.endsWith(".bin"));
             }
         });
         if (latest?.body) {
             document.getElementById("firmwareDescription").innerHTML = marked.parse(latest.body);
         }
         if (asset?.name) {
-            serverStatus.downloadURL = "https://ratgdo.github.io/" + gitRepo + "/firmware/" + asset.name;
+            serverStatus.downloadURL = asset.browser_download_url;
             msg = "You have newest release";
             if (serverStatus.firmwareVersion < latest.tag_name) {
                 // Newest version at GitHub is greater from that installed
