@@ -55,7 +55,7 @@
 #include "webcontent.h"
 
 // Logger tag
-static const char *TAG = "ratgdo-http";
+static const char *TAG = "htgdo-http";
 
 // Browser cache control, time in seconds after which browser cache invalid
 // This is used for CSS, JS and IMAGE file types.  Set to 30 days !!

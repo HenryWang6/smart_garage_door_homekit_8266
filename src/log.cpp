@@ -30,7 +30,7 @@
 #include "web.h"
 
 // Logger tag
-static const char *TAG = "ratgdo-logger";
+static const char *TAG = "htgdo-logger";
 
 // Construct the singleton object for logger access
 LOG *LOG::instancePtr = new LOG();

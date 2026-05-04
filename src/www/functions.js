@@ -20,8 +20,8 @@ var setGDOcmds = {              // setGDO commands that are not sent from server
     softAPmode: false,
     factoryReset: false,
 };
-var gitUser = "ratgdo";         // default git user.
-var gitRepo = "homekit-ratgdo"; // default git repository.
+var gitUser = "HenryWang6";                                   // default git user.
+var gitRepo = "HenryTinkers-SmartGDO-Homekit_w_8266";        // default git repository.
 
 // See... https://github.com/nayarsystems/posix_tz_db
 // This is CSV form of the data, available at this web page.
@@ -361,8 +361,11 @@ function setElementsFromStatus(status) {
         switch (key) {
             case "gitRepo":
                 gitRepo = value;
+                // Update HTGDO docs link to point to the fork's repo
                 document.getElementById("docsLink").href = "https://github.com/" + gitUser + "/" + gitRepo;
-                document.getElementById("contribLink").href = "https://github.com/" + gitUser + "/" + gitRepo + "/graphs/contributors";
+                // contribLink.href is intentionally NOT updated here — hardcoded in HTML to preserve original GPL copyright attribution
+                // Update HTGDO edition attribution link to point to the fork maintainer's profile
+                document.getElementById("htgdoAttribLink").href = "https://github.com/" + gitUser;
                 break;
             case "paired":
                 if (value) {
@@ -1096,17 +1099,17 @@ async function firmwareUpdate(github = true) {
 
 async function rebootRATGDO(dialog = true) {
     if (dialog) {
-        let txt = "Reboot RATGDO, are you sure?";
+        let txt = "Reboot Device, are you sure?";
         if (!confirm(txt)) return;
     }
     var response = await fetch("reboot", {
         method: "POST",
     });
     if (response.status !== 200) {
-        console.warn("Error attempting to reboot RATGDO");
+        console.warn("Error attempting to reboot device");
         return;
     }
-    if (dialog) countdown(rebootSeconds, "RATGDO device rebooting...&nbsp;");
+    if (dialog) countdown(rebootSeconds, "Device rebooting...&nbsp;");
 }
 
 async function unpairRATGDO() {

@@ -40,7 +40,7 @@
 #include "web.h"
 
 // Logger tag
-static const char *TAG = "ratgdo-wifi";
+static const char *TAG = "htgdo-wifi";
 
 static bool wifi_setup_done = false;
 

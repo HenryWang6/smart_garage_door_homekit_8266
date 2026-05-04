@@ -47,7 +47,7 @@
 #endif
 
 // Logger tag
-static const char *TAG = "ratgdo-main";
+static const char *TAG = "htgdo-main";
 
 // Initialize GDO status
 GarageDoor garage_door = {

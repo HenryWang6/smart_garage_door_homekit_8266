@@ -39,7 +39,7 @@
 #include "cQueue.h"
 #endif // ESP8266
 
-static const char *TAG = "ratgdo-comms";
+static const char *TAG = "htgdo-comms";
 
 bool comms_setup_done = false;
 

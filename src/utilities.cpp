@@ -35,14 +35,14 @@
 #include "led.h"
 
 // Logger tag
-static const char *TAG = "ratgdo-utils";
+static const char *TAG = "htgdo-utils";
 
 // What trigger motion... default to enable the motion sensor...
 motionTriggersUnion motionTriggers = {1, 0, 0, 0, 0, 0};
 // Control booting into soft access point mode
 bool softAPmode = false;
 // Realm for MD5 credential hashing
-const char www_realm[] = "RATGDO Login Required";
+const char www_realm[] = "HTGDO Login Required";
 // automatically reboot after X seconds
 uint32_t rebootSeconds = 0;
 

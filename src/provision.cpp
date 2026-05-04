@@ -32,7 +32,7 @@
 #endif
 
 // Logger tag
-static const char *TAG = "ratgdo-improv";
+static const char *TAG = "htgdo-improv";
 
 static bool improv_setup_done = false;
 

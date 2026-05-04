@@ -39,7 +39,7 @@
 #endif
 
 // Logger tag
-static const char *TAG = "ratgdo-homekit";
+static const char *TAG = "htgdo-homekit";
 char qrPayload[21];
 bool homekit_setup_done = false;
 

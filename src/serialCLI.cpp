@@ -24,7 +24,7 @@
 #include "provision.h"
 
 // Logger tag
-static const char *TAG = "ratgdo-serialCLI";
+static const char *TAG = "htgdo-serialCLI";
 
 // forward declarations
 uint32_t scanWifi(bool uniqueSSID);
@@ -39,7 +39,7 @@ void serialCLI(char cmd)
     case '?':
     {
         _millis_t upTime = _millis();
-        Serial.printf_P(PSTR("\n----------> RATGDO <----------\n"));
+        Serial.printf_P(PSTR("\n----------> HTGDO <----------\n"));
         Serial.printf_P(PSTR("Hostname:              http://%s.local\n"), device_name_rfc952);
         Serial.printf_P(PSTR("IP Address:            %s\n"), userConfig->getLocalIP());
         Serial.printf_P(PSTR("Server uptime:         %llums (%s)\n"), (int64_t)upTime, toHHMMSSmmm(upTime));
@@ -59,9 +59,9 @@ void serialCLI(char cmd)
         }
         Serial.printf_P(PSTR("Commands:\n"));
         Serial.printf_P(PSTR(" A - reboot into Access Point mode (192.168.4.1)\n"));
-        Serial.printf_P(PSTR(" R - restart RATGDO\n"));
+        Serial.printf_P(PSTR(" R - restart HTGDO device\n"));
         Serial.printf_P(PSTR(" r - reset door values (ID & rolling code, open/close history)\n"));
-        Serial.printf_P(PSTR(" F - factory reset RATGDO and reboot\n"));
+        Serial.printf_P(PSTR(" F - factory reset HTGDO device and reboot\n"));
         Serial.printf_P(PSTR(" W - configure WiFi Credentials\n"));
         Serial.printf_P(PSTR(" Z - scan for available WiFi networks\n"));
         if (!softAPmode)
@@ -82,10 +82,10 @@ void serialCLI(char cmd)
         }
 
         Serial.println();
-        Serial.printf_P(PSTR(" l - print RATGDO buffered message log\n"));
-        Serial.printf_P(PSTR(" L - print RATGDO saved reboot log\n"));
-        Serial.printf_P(PSTR(" P - print RATGDO crash log\n"));
-        Serial.printf_P(PSTR(" S - print RATGDO status JSON\n"));
+        Serial.printf_P(PSTR(" l - print HTGDO buffered message log\n"));
+        Serial.printf_P(PSTR(" L - print HTGDO saved reboot log\n"));
+        Serial.printf_P(PSTR(" P - print HTGDO crash log\n"));
+        Serial.printf_P(PSTR(" S - print HTGDO status JSON\n"));
         Serial.printf_P(PSTR(" s - %s log to serial port\n"), suppressSerialLog ? "enable" : "disable");
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
         Serial.printf_P(PSTR(" t - print FreeRTOS task info\n"));

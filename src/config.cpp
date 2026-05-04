@@ -40,7 +40,7 @@
 #endif // USE_GDOLIB
 
 // Logger tag
-static const char *TAG = "ratgdo-config";
+static const char *TAG = "htgdo-config";
 
 char default_device_name[DEVICE_NAME_SIZE] = "";
 #ifndef ESP8266

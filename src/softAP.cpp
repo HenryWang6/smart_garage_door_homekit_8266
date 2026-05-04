@@ -25,7 +25,7 @@
 #include "provision.h"
 
 // Logger tag
-static const char *TAG = "ratgdo-softAP";
+static const char *TAG = "htgdo-softAP";
 
 static const char softAPhttpPreamble[] PROGMEM = "HTTP/1.1 200 OK\nContent-Type: text/html\nCache-Control: no-cache, no-store\n\n<!DOCTYPE html>\n";
 // TODO enable advanced mode (AP selection), disabled below by setting display = none

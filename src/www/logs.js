@@ -152,6 +152,10 @@ async function loadLogPages() {
                 document.getElementById("deviceName").innerHTML = msgJson.deviceName;
                 document.title = msgJson.deviceName;
                 document.getElementById("statusjson").innerText = text;
+                // Update footer links using gitUser/gitRepo from server (mirrors functions.js three-way split)
+                if (msgJson.gitRepo) {
+                    updateFooterLinks(msgJson.gitUser || "HenryWang6", msgJson.gitRepo);
+                }
             })
             .catch(error => console.warn(error)),
 
@@ -211,4 +215,17 @@ function uuidv4() {
     return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
         (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
     );
+}
+
+// Update footer links using gitUser / gitRepo from the server status JSON.
+// Mirrors the three-way split in functions.js:
+//   docsLink      → dynamic (follows gitUser/gitRepo)
+//   contribLink   → permanently hardcoded in HTML — GPL-3.0 copyright attribution, never overwritten
+//   htgdoAttribLink → dynamic (follows gitUser profile)
+function updateFooterLinks(gitUser, gitRepo) {
+    const docsLink = document.getElementById("docsLink");
+    const htgdoAttribLink = document.getElementById("htgdoAttribLink");
+    if (docsLink) docsLink.href = "https://github.com/" + gitUser + "/" + gitRepo;
+    // contribLink.href is intentionally NOT updated here — hardcoded in HTML to preserve original GPL copyright attribution
+    if (htgdoAttribLink) htgdoAttribLink.href = "https://github.com/" + gitUser;
 }

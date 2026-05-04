@@ -20,7 +20,7 @@
 #include "drycontact.h"
 
 // Logger tag
-static const char *TAG = "ratgdo-drycontact";
+static const char *TAG = "htgdo-drycontact";
 
 static bool drycontact_setup_done = false;
 
