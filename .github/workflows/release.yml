@@ -37,29 +37,16 @@ jobs:
         run: echo ${{ steps.write_version.outputs.value }}
         shell: bash
 
-      - name: Update firmware/*.bin path on manifest.json
+      - name: Update firmware path on manifest.json to relative
         uses: amochkin/action-json@v1
         id: builds_parts_path
         with:
           mode: write
           file: docs/manifest.json
           property: builds.0.parts.0.path
-          value: https://github.com/${{ github.repository }}/releases/download/${{ steps.tag.outputs.latestTag }}/HTGDO-${{ steps.tag.outputs.latestTag }}.bin
+          value: firmware/HTGDO-${{ steps.tag.outputs.latestTag }}.bin
           value_type: string
           
-      - name: Commit updated manifest.json to repo
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update manifest.json for release ${{ steps.tag.outputs.latestTag }}"
-          file_pattern: docs/manifest.json
-
-      - name: Attach manifest.json to Release
-        uses: AButler/upload-release-assets@v3.0
-        with:
-          files: "docs/manifest.json"
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.tag.outputs.latestTag }}
-
       - uses: actions/cache@v4
         with:
           path: |
@@ -90,6 +77,12 @@ jobs:
           mv .pio/build/ratgdo_esp8266_hV25/firmware.elf .pio/build/ratgdo_esp8266_hV25/HTGDO-${{ steps.tag.outputs.latestTag }}.elf
           mv .pio/build/ratgdo_esp8266_hV25/firmware.md5 .pio/build/ratgdo_esp8266_hV25/HTGDO-${{ steps.tag.outputs.latestTag }}.md5
 
+      - name: Copy firmware to docs for GitHub Pages
+        run: |
+          rm -rf docs/firmware
+          mkdir -p docs/firmware
+          cp .pio/build/ratgdo_esp8266_hV25/HTGDO-${{ steps.tag.outputs.latestTag }}.bin docs/firmware/
+
       - name: Attach Bundle - Firmware.bin
         uses: AButler/upload-release-assets@v3.0
         with:
@@ -108,6 +101,19 @@ jobs:
         uses: AButler/upload-release-assets@v3.0
         with:
           files: ".pio/build/ratgdo_esp8266_hV25/*.elf"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ steps.tag.outputs.latestTag }}
+
+      - name: Commit manifest and firmware to repo
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update manifest and firmware for release ${{ steps.tag.outputs.latestTag }}"
+          file_pattern: docs/manifest.json docs/firmware/
+
+      - name: Attach manifest.json to Release
+        uses: AButler/upload-release-assets@v3.0
+        with:
+          files: "docs/manifest.json"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ steps.tag.outputs.latestTag }}
 
